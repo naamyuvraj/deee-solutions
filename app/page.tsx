@@ -1,8 +1,17 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input"
+import { useRef } from "react";
+import emailjs from "@emailjs/browser"
+import { Textarea } from "@/components/ui/textarea"
+
+
+import { motion } from "framer-motion"
+
+import { BarChart2, MessageCircle, TrendingUp } from "lucide-react";
 import {
   ArrowRight,
   Code,
@@ -12,6 +21,10 @@ import {
   Database,
   Zap,
   Award,
+  Mail,
+  User,
+  Phone,
+  Clock,
   Search,
   BarChart3,
   MessageSquare,
@@ -22,45 +35,40 @@ import {
   ChevronRight,
   Menu,
   X,
-} from "lucide-react"
-import Link from "next/link"
-import { useEffect, useState } from "react"
+  Send,
+} from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import Home from "./card.js";
 
 export default function HomePage() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [scrollY, setScrollY] = useState(0)
-  const [currentTeamMember, setCurrentTeamMember] = useState(0)
-  const [isAnnual, setIsAnnual] = useState(true)
-  const [openFaq, setOpenFaq] = useState<number | null>(null)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [floatingOffset, setFloatingOffset] = useState(0)
-
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [scrollY, setScrollY] = useState(0);
+  const [currentTeamMember, setCurrentTeamMember] = useState(0);
+  const [isAnnual, setIsAnnual] = useState(true);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [floatingOffset, setFloatingOffset] = useState(0);
+  const refs = useRef<(HTMLDivElement | null)[]>([])
+  const [areInView, setAreInView] = useState<boolean[]>([false, false, false, false])
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
+  const formRef = useRef<HTMLFormElement>(null)
+const [time, setTime] = useState("");
   const teamMembers = [
     {
-      name: "John Doe",
-      role: "Product Head",
-      image: "/placeholder.svg?height=400&width=300&text=John+Doe",
+      name: "Yuvraj",
+      role: "Co-founder & Full Stack Developer",
+      image: "/placeholder.svg?height=400&width=300&text=Yuvraj",
       bio: "Leading product strategy and innovation",
     },
     {
-      name: "Armenia Sean",
-      role: "Social Media Head",
+      name: "Sumit",
+      role: "Co-founder & Full Stack Developer",
       image: "/placeholder.svg?height=400&width=300&text=Armenia+Sean",
       bio: "Driving digital marketing excellence",
-    },
-    {
-      name: "Krishna Murthy",
-      role: "Technical Head",
-      image: "/placeholder.svg?height=400&width=300&text=Krishna+Murthy",
-      bio: "Architecting scalable solutions",
-    },
-    {
-      name: "Sarah Johnson",
-      role: "Design Head",
-      image: "/placeholder.svg?height=400&width=300&text=Sarah+Johnson",
-      bio: "Creating beautiful user experiences",
-    },
-  ]
+    }
+  ];
 
   const techStack = [
     { name: "Figma", icon: "🎨" },
@@ -79,7 +87,7 @@ export default function HomePage() {
     { name: "Docker", icon: "🐳" },
     { name: "GraphQL", icon: "📊" },
     { name: "REST API", icon: "🔗" },
-  ]
+  ];
 
   const portfolioProjects = [
     {
@@ -109,7 +117,7 @@ export default function HomePage() {
       image: "/placeholder.svg?height=400&width=600&text=Project+3",
       color: "#ADFF2F",
     },
-  ]
+  ];
 
   const faqs = [
     {
@@ -142,49 +150,86 @@ export default function HomePage() {
       answer:
         "We follow industry best practices for security, including encryption, secure hosting, and regular security audits to protect your data.",
     },
-  ]
+  ];
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
-    }
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
 
     const handleScroll = () => {
-      setScrollY(window.scrollY)
-    }
+      setScrollY(window.scrollY);
+    };
 
-    window.addEventListener("mousemove", handleMouseMove)
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove)
-      window.removeEventListener("scroll", handleScroll)
-    }
-  }, [])
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentTeamMember((prev) => (prev + 1) % teamMembers.length)
-    }, 4000)
+      setCurrentTeamMember((prev) => (prev + 1) % teamMembers.length);
+    }, 4000);
 
-    return () => clearInterval(interval)
-  }, [teamMembers.length])
+    return () => clearInterval(interval);
+  }, [teamMembers.length]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setFloatingOffset((prev) => (prev + 1) % 360)
-    }, 50)
-    return () => clearInterval(interval)
-  }, [])
+      setFloatingOffset((prev) => (prev + 1) % 360);
+    }, 50);
+    return () => clearInterval(interval);
+  }, []);
 
   const nextTeamMember = () => {
-    setCurrentTeamMember((prev) => (prev + 1) % teamMembers.length)
-  }
+    setCurrentTeamMember((prev) => (prev + 1) % teamMembers.length);
+  };
 
   const prevTeamMember = () => {
-    setCurrentTeamMember((prev) => (prev - 1 + teamMembers.length) % teamMembers.length)
+    setCurrentTeamMember(
+      (prev) => (prev - 1 + teamMembers.length) % teamMembers.length
+    );
+  };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setSubmitStatus("idle")
+
+    try {
+      // Initialize EmailJS (in a real app, you'd do this once in your app initialization)
+      emailjs.init("Fjnhf0mrC_69KJ_U8")
+
+      const result = await emailjs.sendForm(
+        "service_522l8ey",
+        "template_ubp069k",
+        formRef.current!,
+        "Fjnhf0mrC_69KJ_U8"
+      )
+
+      console.log("Email sent successfully:", result.text)
+      setSubmitStatus("success")
+      formRef.current?.reset()
+    } catch (error) {
+      console.error("Email send failed:", error)
+      setSubmitStatus("error")
+    } finally {
+      setIsSubmitting(false)
+      // Reset status after 3 seconds
+      setTimeout(() => setSubmitStatus("idle"), 3000)
+    }
   }
 
+  useEffect(() => {
+    const updateTime = () => setTime(new Date().toLocaleTimeString());
+    updateTime(); // set immediately
+    const interval = setInterval(updateTime, 1000); // update every second
+    return () => clearInterval(interval);
+  }, []);
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Reduced Torch Light Effect */}
@@ -408,7 +453,7 @@ export default function HomePage() {
       </div>
 
       {/* Fixed Compact Navigation */}
-      <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-black/20 backdrop-blur-md border border-gray-600/30 rounded-full">
+      <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-black/20 backdrop-blur-md border border-gray-600/30 rounded-full">
         <div className="flex items-center justify-between px-8 py-3">
           <div className="flex items-center">
             <span className="text-sm font-medium text-white">
@@ -422,67 +467,83 @@ export default function HomePage() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            {mobileMenuOpen ? (
+              <X className="h-4 w-4" />
+            ) : (
+              <Menu className="h-4 w-4" />
+            )}
           </button>
 
           {/* Desktop navigation */}
-          <div className="hidden md:flex space-x-4 ml-8">
+          <div className="hidden md:flex space-x-6 ml-8">
             <a
               href="#home"
-              className="text-gray-400 hover:text-white transition-colors text-xs"
+              className="text-white hover:text-[#ADFF2F] transition-colors text-sm"
               onClick={(e) => {
-                e.preventDefault()
-                document.getElementById("home")?.scrollIntoView({ behavior: "smooth" })
+                e.preventDefault();
+                document
+                  .getElementById("home")
+                  ?.scrollIntoView({ behavior: "smooth" });
               }}
             >
               Home
             </a>
             <a
               href="#services"
-              className="text-gray-400 hover:text-white transition-colors text-xs"
+              className="text-white hover:text-[#ADFF2F] transition-colors text-sm"
               onClick={(e) => {
-                e.preventDefault()
-                document.getElementById("services")?.scrollIntoView({ behavior: "smooth" })
+                e.preventDefault();
+                document
+                  .getElementById("services")
+                  ?.scrollIntoView({ behavior: "smooth" });
               }}
             >
               Services
             </a>
             <a
               href="#portfolio"
-              className="text-gray-400 hover:text-white transition-colors text-xs"
+              className="text-white hover:text-[#ADFF2F] transition-colors text-sm"
               onClick={(e) => {
-                e.preventDefault()
-                document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" })
+                e.preventDefault();
+                document
+                  .getElementById("portfolio")
+                  ?.scrollIntoView({ behavior: "smooth" });
               }}
             >
               Portfolio
             </a>
             <a
               href="#pricing"
-              className="text-gray-400 hover:text-white transition-colors text-xs"
+              className="text-white hover:text-[#ADFF2F] transition-colors text-sm"
               onClick={(e) => {
-                e.preventDefault()
-                document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" })
+                e.preventDefault();
+                document
+                  .getElementById("pricing")
+                  ?.scrollIntoView({ behavior: "smooth" });
               }}
             >
               Pricing
             </a>
             <a
               href="#team"
-              className="text-gray-400 hover:text-white transition-colors text-xs"
+              className="text-white hover:text-[#ADFF2F] transition-colors text-sm"
               onClick={(e) => {
-                e.preventDefault()
-                document.getElementById("team")?.scrollIntoView({ behavior: "smooth" })
+                e.preventDefault();
+                document
+                  .getElementById("team")
+                  ?.scrollIntoView({ behavior: "smooth" });
               }}
             >
               Team
             </a>
             <a
               href="#contact"
-              className="text-gray-400 hover:text-white transition-colors text-xs"
+              className="text-white hover:text-[#ADFF2F] transition-colors text-sm"
               onClick={(e) => {
-                e.preventDefault()
-                document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
+                e.preventDefault();
+                document
+                  .getElementById("contact")
+                  ?.scrollIntoView({ behavior: "smooth" });
               }}
             >
               Contact
@@ -496,66 +557,78 @@ export default function HomePage() {
             <div className="flex flex-col px-6 py-4 space-y-3">
               <a
                 href="#home"
-                className="text-gray-400 hover:text-white transition-colors text-sm py-2"
+                className="text-white hover:text-[#ADFF2F] transition-colors text-sm"
                 onClick={(e) => {
-                  e.preventDefault()
-                  setMobileMenuOpen(false)
-                  document.getElementById("home")?.scrollIntoView({ behavior: "smooth" })
+                  e.preventDefault();
+                  setMobileMenuOpen(false);
+                  document
+                    .getElementById("home")
+                    ?.scrollIntoView({ behavior: "smooth" });
                 }}
               >
                 Home
               </a>
               <a
                 href="#services"
-                className="text-gray-400 hover:text-white transition-colors text-sm py-2"
+                className="text-white hover:text-[#ADFF2F] transition-colors text-sm"
                 onClick={(e) => {
-                  e.preventDefault()
-                  setMobileMenuOpen(false)
-                  document.getElementById("services")?.scrollIntoView({ behavior: "smooth" })
+                  e.preventDefault();
+                  setMobileMenuOpen(false);
+                  document
+                    .getElementById("services")
+                    ?.scrollIntoView({ behavior: "smooth" });
                 }}
               >
                 Services
               </a>
               <a
                 href="#portfolio"
-                className="text-gray-400 hover:text-white transition-colors text-sm py-2"
+                className="text-white hover:text-[#ADFF2F] transition-colors text-sm"
                 onClick={(e) => {
-                  e.preventDefault()
-                  setMobileMenuOpen(false)
-                  document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" })
+                  e.preventDefault();
+                  setMobileMenuOpen(false);
+                  document
+                    .getElementById("portfolio")
+                    ?.scrollIntoView({ behavior: "smooth" });
                 }}
               >
                 Portfolio
               </a>
               <a
                 href="#pricing"
-                className="text-gray-400 hover:text-white transition-colors text-sm py-2"
+                className="text-white hover:text-[#ADFF2F] transition-colors text-sm"
                 onClick={(e) => {
-                  e.preventDefault()
-                  setMobileMenuOpen(false)
-                  document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" })
+                  e.preventDefault();
+                  setMobileMenuOpen(false);
+                  document
+                    .getElementById("pricing")
+                    ?.scrollIntoView({ behavior: "smooth" });
                 }}
               >
                 Pricing
               </a>
               <a
                 href="#team"
-                className="text-gray-400 hover:text-white transition-colors text-sm py-2"
+                className="text-white hover:text-[#ADFF2F] transition-colors text-sm"
                 onClick={(e) => {
-                  e.preventDefault()
-                  setMobileMenuOpen(false)
-                  document.getElementById("team")?.scrollIntoView({ behavior: "smooth" })
+                  e.preventDefault();
+                  setMobileMenuOpen(false);
+                  document
+                    .getElementById("team")
+                    ?.scrollIntoView({ behavior: "smooth" });
                 }}
               >
                 Team
               </a>
               <a
                 href="#contact"
-                className="text-gray-400 hover:text-white transition-colors text-sm py-2"
+                className="text-white hover:text-[#ADFF2F] transition-colors text-sm"
                 onClick={(e) => {
-                  e.preventDefault()
-                  setMobileMenuOpen(false)
-                  document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
+                  e.preventDefault();
+                  setMobileMenuOpen(false);
+                  document
+                    .getElementById("contact")
+                    ?.scrollIntoView({ behavior: "smooth" });
                 }}
               >
                 Contact
@@ -576,7 +649,10 @@ export default function HomePage() {
             transform: `translateY(${scrollY * 0.1}px)`,
           }}
         >
-          <Badge variant="secondary" className="mb-8 bg-gray-800 text-gray-300 border-gray-700 text-xs font-normal">
+          <Badge
+            variant="secondary"
+            className="mb-8 bg-gray-800 text-gray-300 border-gray-700 text-xs font-normal"
+          >
             DIGITAL SOLUTIONS
           </Badge>
 
@@ -587,7 +663,8 @@ export default function HomePage() {
           </h1>
 
           <p className="text-lg text-gray-400 mb-12 max-w-2xl mx-auto font-light">
-            We build digital products that are beautiful, robust, and ahead of their time.
+            We build digital products that are beautiful, robust, and ahead of
+            their time.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -614,7 +691,7 @@ export default function HomePage() {
       <section className="py-16 px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-            <div
+            {/* <div
               className="space-y-4"
               style={{
                 transform: `translateY(${scrollY * 0.05}px)`,
@@ -624,55 +701,189 @@ export default function HomePage() {
                 <Zap className="h-5 w-5" style={{ color: "#ADFF2F" }} />
                 <h3 className="text-xl font-light text-white">One prompt, full product</h3>
               </div>
-              <p className="text-gray-400 font-light">Turn ideas into designs, specs, and content.</p>
+              <p className="text-gray-400 font-light">
+                Turn ideas into designs, specs, and content.
+              </p>
+            </div> */}
+
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-8"> */}
+            <div
+              className="space-y-4"
+              style={{
+                transform: `translateY(${scrollY * 0.01}px)`,
+              }}
+            >
+              <div className="flex items-center space-x-3">
+                <BarChart3 className="h-5 w-5" style={{ color: "#ADFF2F" }} />
+                <h3 className="text-3xl font-light text-white">
+                  Compare reports year over year
+                </h3>
+              </div>
+              <p className="text-gray-400 font-light">
+                Make data-driven decisions.
+              </p>
             </div>
 
             <div
               className="space-y-4"
               style={{
-                transform: `translateY(${scrollY * 0.03}px)`,
+                transform: `translateY(${scrollY * -0.01}px)`,
               }}
             >
               <div className="flex items-center space-x-3">
-                <Database className="h-5 w-5" style={{ color: "#ADFF2F" }} />
-                <h3 className="text-xl font-light text-white">Auto tech packs and specs</h3>
+                <MessageSquare
+                  className="h-5 w-5"
+                  style={{ color: "#ADFF2F" }}
+                />
+                <h3 className="text-3xl font-light text-white">
+                  Track and review responses
+                </h3>
               </div>
-              <p className="text-gray-400 font-light">Export ready-to-use files with one click.</p>
+              <p className="text-gray-400 font-light">
+                Turn messy feedback into clear, actionable insight.
+              </p>
             </div>
           </div>
+          {/* </div> */}
 
           {/* Main Feature Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-            {/* Search Card */}
+            {/* Useful Dashboard Card */}
             <Card
-              className="bg-gray-800/50 border-gray-700 p-8 hover:bg-gray-800/70 transition-all duration-300"
+              className="bg-gray-800/50 border-gray-700 p-8 hover:bg-gray-800/70 transition-all duration-300 relative overflow-hidden h-50"
               style={{
                 transform: `translateY(${scrollY * 0.02}px)`,
               }}
             >
               <CardContent className="p-0">
-                <div className="mb-6">
-                  <h3 className="text-2xl font-light text-white mb-2">
-                    Search with <span style={{ color: "#ADFF2F" }}>✨</span>
-                  </h3>
-                  <h4 className="text-2xl font-light mb-6" style={{ color: "#ADFF2F" }}>
-                    Seamless Power
-                  </h4>
+                {/* Icon Section */}
+                <div className="absolute top-4 right-4">
+                  <div
+                    className="w-16 h-16 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: "#ADFF2F" + "20" }}
+                  >
+                    <BarChart2
+                      className="h-8 w-8"
+                      style={{ color: "#ADFF2F" }}
+                    />
+                  </div>
+                  <div
+                    className="absolute -top-2 -right-2 w-4 h-4 rounded-full"
+                    style={{ backgroundColor: "#ADFF2F" }}
+                  ></div>
+                  <div
+                    className="absolute top-8 -right-4 w-3 h-3 rounded-full"
+                    style={{ backgroundColor: "#ADFF2F" + "CC" }}
+                  ></div>
+                  <div
+                    className="absolute -top-4 right-8 w-2 h-2 rounded-full"
+                    style={{ backgroundColor: "#ADFF2F" + "AA" }}
+                  ></div>
                 </div>
 
-                <div className="relative">
+                {/* Text Section */}
+                <h3 className="text-2xl font-light text-white mb-2">
+                  Insightful Dashboard
+                </h3>
+                <p className="text-gray-400 text-sm font-light mb-4">
+                  Track, compare, and analyze your performance all in one place.
+                </p>
+                <p className="text-gray-400 text-sm font-light">
+                  Just like Google Analytics — but built for your workflow.
+                </p>
+              </CardContent>
+            </Card>
+            {/* Chatbot Feature Card */}
+            <Card
+              className="bg-gray-800/50 border-gray-700 p-8 hover:bg-gray-800/70 transition-all duration-300 relative overflow-hidden"
+              style={{
+                transform: `translateY(${scrollY * 0.01}px)`,
+              }}
+            >
+              <CardContent className="p-0">
+                {/* Icon Section */}
+                <div className="absolute top-4 right-4">
                   <div
-                    className="flex items-center bg-black border rounded-full px-6 py-4"
-                    style={{ borderColor: "#ADFF2F" + "50" }}
+                    className="w-16 h-16 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: "#ADFF2F" + "20" }}
                   >
-                    <input
-                      type="text"
-                      placeholder="Generate product..."
-                      className="bg-transparent text-gray-400 flex-1 outline-none text-sm"
+                    <MessageCircle
+                      className="h-8 w-8"
+                      style={{ color: "#ADFF2F" }}
                     />
-                    <Search className="h-4 w-4" style={{ color: "#ADFF2F" }} />
                   </div>
+                  <div
+                    className="absolute -top-2 -right-2 w-4 h-4 rounded-full"
+                    style={{ backgroundColor: "#ADFF2F" }}
+                  ></div>
+                  <div
+                    className="absolute top-8 -right-4 w-3 h-3 rounded-full"
+                    style={{ backgroundColor: "#ADFF2F" + "CC" }}
+                  ></div>
+                  <div
+                    className="absolute -top-4 right-8 w-2 h-2 rounded-full"
+                    style={{ backgroundColor: "#ADFF2F" + "AA" }}
+                  ></div>
                 </div>
+
+                {/* Text Section */}
+                <h3 className="text-2xl font-light text-white mb-2">
+                  Smart Chatbot Assistant
+                </h3>
+                <p className="text-gray-400 text-sm font-light mb-4">
+                  Get instant answers, guidance, and support — available 24/7.
+                </p>
+                <p className="text-gray-400 text-sm font-light">
+                  Integrated directly into your dashboard for a seamless
+                  experience.
+                </p>
+              </CardContent>
+            </Card>
+            {/* Google Analytics Integration Card */}
+            <Card
+              className="bg-gray-800/50 border-gray-700 p-8 hover:bg-gray-800/70 transition-all duration-300 relative overflow-hidden"
+              style={{
+                transform: `translateY(${scrollY * -0.01}px)`,
+              }}
+            >
+              <CardContent className="p-0">
+                {/* Icon Section */}
+                <div className="absolute top-4 right-4">
+                  <div
+                    className="w-16 h-16 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: "#ADFF2F" + "20" }}
+                  >
+                    <TrendingUp
+                      className="h-8 w-8"
+                      style={{ color: "#ADFF2F" }}
+                    />
+                  </div>
+                  <div
+                    className="absolute -top-2 -right-2 w-4 h-4 rounded-full"
+                    style={{ backgroundColor: "#ADFF2F" }}
+                  ></div>
+                  <div
+                    className="absolute top-8 -right-4 w-3 h-3 rounded-full"
+                    style={{ backgroundColor: "#ADFF2F" + "CC" }}
+                  ></div>
+                  <div
+                    className="absolute -top-4 right-8 w-2 h-2 rounded-full"
+                    style={{ backgroundColor: "#ADFF2F" + "AA" }}
+                  ></div>
+                </div>
+
+                {/* Text Section */}
+                <h3 className="text-2xl font-light text-white mb-2">
+                  Google Analytics Integration
+                </h3>
+                <p className="text-gray-400 text-sm font-light mb-4">
+                  Connect your account to track traffic, engagement, and
+                  conversions in real-time.
+                </p>
+                <p className="text-gray-400 text-sm font-light">
+                  All your analytics data — right inside your dashboard for
+                  quick decisions.
+                </p>
               </CardContent>
             </Card>
 
@@ -705,55 +916,43 @@ export default function HomePage() {
                   ></div>
                 </div>
 
-                <h3 className="text-xl font-light text-white mb-2">Your data is safe with us</h3>
-                <p className="text-gray-400 text-sm font-light mb-4">Any assets used in projects will live here.</p>
-                <p className="text-gray-400 text-sm font-light">Start creating by uploading your files.</p>
+                <h3 className="text-2xl font-light text-white mb-2">
+                  Your data is safe with us
+                </h3>
+                <p className="text-gray-400 text-sm font-light mb-4">
+                  Any assets used in projects will live here.
+                </p>
+                <p className="text-gray-400 text-sm font-light">
+                  Start creating by uploading your files.
+                </p>
               </CardContent>
             </Card>
           </div>
 
-          {/* Bottom Feature Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div
-              className="space-y-4"
-              style={{
-                transform: `translateY(${scrollY * 0.01}px)`,
-              }}
-            >
-              <div className="flex items-center space-x-3">
-                <BarChart3 className="h-5 w-5" style={{ color: "#ADFF2F" }} />
-                <h3 className="text-xl font-light text-white">Compare reports year over year</h3>
-              </div>
-              <p className="text-gray-400 font-light">Make data-driven decisions.</p>
-            </div>
-
-            <div
-              className="space-y-4"
-              style={{
-                transform: `translateY(${scrollY * -0.01}px)`,
-              }}
-            >
-              <div className="flex items-center space-x-3">
-                <MessageSquare className="h-5 w-5" style={{ color: "#ADFF2F" }} />
-                <h3 className="text-xl font-light text-white">Track and review responses</h3>
-              </div>
-              <p className="text-gray-400 font-light">Turn messy feedback into clear, actionable insight.</p>
-            </div>
-          </div>
         </div>
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-16 px-4 sm:px-6 lg:px-8 relative z-10">
+      <section
+        id="services"
+        className="py-16 px-4 sm:px-6 lg:px-8 relative z-10"
+      >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <Badge variant="secondary" className="mb-4 bg-gray-800 text-gray-300 border-gray-700 text-xs font-normal">
+            <Badge
+              variant="secondary"
+              className="mb-4 bg-gray-800 text-gray-300 border-gray-700 text-xs font-normal"
+            >
               SERVICES
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-light text-white mb-4">
               Our <span style={{ color: "#ADFF2F" }}>Expertise</span>
             </h2>
           </div>
+                        <p className="text-gray-400 font-light">
+                Turn ideas into designs, specs, and content.
+              </p>
+
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
@@ -762,21 +961,39 @@ export default function HomePage() {
                 title: "Website Development",
                 desc: "Modern, responsive websites built with cutting-edge technologies.",
               },
-              { icon: Code, title: "Custom Software", desc: "Tailored software solutions for your business needs." },
+              {
+                icon: Code,
+                title: "Custom Software",
+                desc: "Tailored software solutions for your business needs.",
+              },
               {
                 icon: ShoppingCart,
                 title: "E-commerce Solutions",
                 desc: "Complete online store development and management.",
               },
-              { icon: Smartphone, title: "Mobile Apps", desc: "Native and cross-platform mobile applications." },
-              { icon: Database, title: "Database Solutions", desc: "Robust database design and management systems." },
-              { icon: Zap, title: "API Development", desc: "RESTful and GraphQL APIs for seamless integration." },
+              {
+                icon: Smartphone,
+                title: "Mobile Apps",
+                desc: "Native and cross-platform mobile applications.",
+              },
+              {
+                icon: Database,
+                title: "Database Solutions",
+                desc: "Robust database design and management systems.",
+              },
+              {
+                icon: Zap,
+                title: "API Development",
+                desc: "RESTful and GraphQL APIs for seamless integration.",
+              },
             ].map((service, index) => (
               <Card
                 key={index}
                 className="bg-gray-800/30 border-gray-700 hover:bg-gray-800/50 transition-all duration-300 group"
                 style={{
-                  transform: `translateY(${scrollY * (0.01 * (index % 2 === 0 ? 1 : -1))}px)`,
+                  transform: `translateY(${
+                    scrollY * (0.01 * (index % 2 === 0 ? 1 : -1))
+                  }px)`,
                 }}
               >
                 <CardContent className="p-6">
@@ -784,8 +1001,12 @@ export default function HomePage() {
                     className="h-6 w-6 mb-4 group-hover:scale-110 transition-transform duration-300"
                     style={{ color: "#ADFF2F" }}
                   />
-                  <h3 className="text-lg font-light text-white mb-2">{service.title}</h3>
-                  <p className="text-gray-400 text-sm font-light">{service.desc}</p>
+                  <h3 className="text-2xl font-light text-white mb-2">
+                    {service.title}
+                  </h3>
+                  <p className="text-gray-400 text-sm font-light">
+                    {service.desc}
+                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -793,11 +1014,16 @@ export default function HomePage() {
         </div>
       </section>
 
+
+
       {/* Tech Stack Carousel with Icons */}
       <section className="py-12 px-4 sm:px-6 lg:px-8 relative z-10 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <Badge variant="secondary" className="mb-4 bg-gray-800 text-gray-300 border-gray-700 text-xs font-normal">
+            <Badge
+              variant="secondary"
+              className="mb-4 bg-gray-800 text-gray-300 border-gray-700 text-xs font-normal"
+            >
               TECHNOLOGIES
             </Badge>
             <h2 className="text-2xl sm:text-3xl font-light text-white mb-4">
@@ -813,18 +1039,25 @@ export default function HomePage() {
                   className="flex-shrink-0 bg-gray-800/30 border border-gray-700 rounded-full px-6 py-3 hover:bg-gray-800/50 transition-colors flex items-center space-x-3"
                 >
                   <span className="text-2xl">{tech.icon}</span>
-                  <span className="text-gray-300 whitespace-nowrap text-sm font-light">{tech.name}</span>
+                  <span className="text-gray-300 whitespace-nowrap text-sm font-light">
+                    {tech.name}
+                  </span>
                 </div>
               ))}
             </div>
             <div className="flex animate-scroll-reverse space-x-6 py-4">
-              {[...techStack.slice().reverse(), ...techStack.slice().reverse()].map((tech, index) => (
+              {[
+                ...techStack.slice().reverse(),
+                ...techStack.slice().reverse(),
+              ].map((tech, index) => (
                 <div
                   key={index}
                   className="flex-shrink-0 bg-gray-800/30 border border-gray-700 rounded-full px-6 py-3 hover:bg-gray-800/50 transition-colors flex items-center space-x-3"
                 >
                   <span className="text-xl">{tech.icon}</span>
-                  <span className="text-gray-400 whitespace-nowrap text-xs font-light">{tech.name}</span>
+                  <span className="text-gray-400 whitespace-nowrap text-xs font-light">
+                    {tech.name}
+                  </span>
                 </div>
               ))}
             </div>
@@ -832,19 +1065,29 @@ export default function HomePage() {
         </div>
       </section>
 
+
+
+      
+
       {/* Portfolio Gallery with Creative Animations */}
-      <section id="portfolio" className="relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 py-16">
-            <Badge variant="secondary" className="mb-4 bg-gray-800 text-gray-300 border-gray-700 text-xs font-normal">
+
+      
+       <section id="portfolio" className="relative z-10">
+        {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> */}
+          <div className="text-center mb-10 py-12">
+            <Badge
+              variant="secondary"
+              className="mb-4 bg-gray-800 text-gray-300 border-gray-700 text-xs font-normal"
+            >
               PORTFOLIO
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-light text-white mb-4">
               Our <span style={{ color: "#ADFF2F" }}>Work</span>
             </h2>
           </div>
+            <Home></Home>
 
-          <div className="relative">
+          {/* <div className="relative">
             {portfolioProjects.map((project, index) => (
               <div
                 key={project.id}
@@ -856,11 +1099,16 @@ export default function HomePage() {
                 <Card
                   className="bg-gray-900/95 backdrop-blur-sm border-gray-700 overflow-hidden w-full h-[85vh] flex items-center relative group-hover:scale-[1.02] transition-all duration-700 ease-out"
                   style={{
-                    transform: `scale(${1 - index * 0.05}) translateY(${index * 20 + Math.sin(((floatingOffset + index * 60) * Math.PI) / 180) * 5}px)`,
+                    transform: `scale(${1 - index * 0.05}) translateY(${
+                      index * 20 +
+                      Math.sin(
+                        ((floatingOffset + index * 60) * Math.PI) / 180
+                      ) *
+                        5
+                    }px)`,
                     boxShadow: `0 0 0 1px rgba(173, 255, 47, 0.1)`,
                   }}
                 >
-                  {/* Animated border glow on hover */}
                   <div
                     className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
                     style={{
@@ -870,7 +1118,6 @@ export default function HomePage() {
                     }}
                   />
 
-                  {/* Floating orbs animation */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none overflow-hidden">
                     {[...Array(8)].map((_, i) => (
                       <div
@@ -881,7 +1128,11 @@ export default function HomePage() {
                           left: `${10 + i * 12}%`,
                           top: `${20 + (i % 3) * 25}%`,
                           opacity: 0.6,
-                          transform: `translateY(${Math.sin(((floatingOffset + i * 45) * Math.PI) / 180) * 10}px)`,
+                          transform: `translateY(${
+                            Math.sin(
+                              ((floatingOffset + i * 45) * Math.PI) / 180
+                            ) * 10
+                          }px)`,
                           transition: "transform 0.1s ease-out",
                         }}
                       />
@@ -891,7 +1142,6 @@ export default function HomePage() {
                   <CardContent className="p-0 w-full h-full relative z-10">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 h-full">
                       <div className="flex flex-col justify-center p-8 lg:p-16 relative overflow-hidden">
-                        {/* Animated background pattern */}
                         <div className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-1000">
                           <div
                             className="absolute inset-0"
@@ -922,33 +1172,31 @@ export default function HomePage() {
                             boxShadow: "0 0 0 0 rgba(173, 255, 47, 0.4)",
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.boxShadow = "0 0 20px 5px rgba(173, 255, 47, 0.3)"
+                            e.currentTarget.style.boxShadow =
+                              "0 0 20px 5px rgba(173, 255, 47, 0.3)";
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.boxShadow = "0 0 0 0 rgba(173, 255, 47, 0.4)"
+                            e.currentTarget.style.boxShadow =
+                              "0 0 0 0 rgba(173, 255, 47, 0.4)";
                           }}
                         >
-                          {/* Button shine effect */}
                           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                           <span className="relative z-10">View Project</span>
                           <ArrowRight className="ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform duration-300 relative z-10" />
                         </Button>
                       </div>
                       <div className="relative overflow-hidden">
-                        {/* Animated overlay */}
                         <div
                           className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-700"
                           style={{ backgroundColor: project.color }}
                         />
 
-                        {/* Image with zoom and rotation effect */}
                         <img
                           src={project.image || "/placeholder.svg"}
                           alt={project.title}
                           className="w-full h-full object-cover transform group-hover:scale-110 group-hover:rotate-1 transition-all duration-1000 ease-out"
                         />
 
-                        {/* Multiple sliding overlay effects */}
                         <div
                           className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-1500 ease-out"
                           style={{
@@ -962,7 +1210,6 @@ export default function HomePage() {
                           }}
                         />
 
-                        {/* Animated corner accents */}
                         <div
                           className="absolute top-4 right-4 w-12 h-12 border-t-2 border-r-2 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-300 transform group-hover:scale-110"
                           style={{ borderColor: "#ADFF2F" }}
@@ -972,14 +1219,19 @@ export default function HomePage() {
                           style={{ borderColor: "#ADFF2F" }}
                         />
 
-                        {/* Pulsing dots */}
                         <div className="absolute top-8 left-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-500">
-                          <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: "#ADFF2F" }} />
+                          <div
+                            className="w-3 h-3 rounded-full animate-pulse"
+                            style={{ backgroundColor: "#ADFF2F" }}
+                          />
                         </div>
                         <div className="absolute bottom-8 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-700">
                           <div
                             className="w-2 h-2 rounded-full animate-pulse"
-                            style={{ backgroundColor: "#ADFF2F", animationDelay: "0.5s" }}
+                            style={{
+                              backgroundColor: "#ADFF2F",
+                              animationDelay: "0.5s",
+                            }}
                           />
                         </div>
                       </div>
@@ -988,12 +1240,11 @@ export default function HomePage() {
                 </Card>
               </div>
             ))}
-          </div>
+          </div> */}
 
-          {/* Add spacing after portfolio */}
-          <div className="h-screen"></div>
-        </div>
-      </section>
+        {/* </div> */}
+      </section> 
+
 
       {/* Pricing Section */}
       <section id="pricing" className="py-16 px-4 sm:px-6 lg:px-8 relative z-10">
@@ -1008,22 +1259,8 @@ export default function HomePage() {
               launch faster and smarter
             </h2>
 
+            {/* Remove this entire toggle section */}
             {/* Toggle */}
-            <div className="flex items-center justify-center space-x-4 mb-12">
-              <span className={`text-sm ${!isAnnual ? "text-white" : "text-gray-400"}`}>Monthly</span>
-              <button
-                onClick={() => setIsAnnual(!isAnnual)}
-                className="relative w-12 h-6 rounded-full transition-colors duration-200"
-                style={{ backgroundColor: "#ADFF2F" }}
-              >
-                <div
-                  className={`absolute top-1 w-4 h-4 bg-black rounded-full transition-transform duration-200 ${
-                    isAnnual ? "translate-x-7" : "translate-x-1"
-                  }`}
-                />
-              </button>
-              <span className={`text-sm ${isAnnual ? "text-white" : "text-gray-400"}`}>Annually</span>
-            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -1034,14 +1271,16 @@ export default function HomePage() {
                   <Zap className="h-5 w-5" style={{ color: "#ADFF2F" }} />
                   <h3 className="text-lg font-light text-white">Starter</h3>
                 </div>
-                <div className="text-4xl font-light text-white mb-2">
-                  ${isAnnual ? "37" : "47"}
-                  <span className="text-lg text-gray-400">/month</span>
-                </div>
+                <div className="text-4xl font-light text-white mb-2">Starting at ₹9,999</div>
                 <p className="text-gray-400 text-sm font-light mb-6">
                   Perfect for small businesses starting with digital solutions.
                 </p>
-                <Button className="w-full bg-white text-black hover:bg-gray-200 rounded-full mb-6">Buy now</Button>
+                <Button
+                  className="w-full text-black hover:opacity-90 rounded-full mb-6"
+                  style={{ backgroundColor: "#ADFF2F" }}
+                >
+                  Contact Us
+                </Button>
                 <div className="space-y-3">
                   <p className="text-white font-light text-sm mb-3">{"What's included:"}</p>
                   {[
@@ -1049,7 +1288,7 @@ export default function HomePage() {
                     "Standard support",
                     "Basic analytics",
                     "Email support",
-                    "1 revision round",
+                    "3 revision round",
                   ].map((feature, index) => (
                     <div key={index} className="flex items-center space-x-2">
                       <Check className="h-4 w-4" style={{ color: "#ADFF2F" }} />
@@ -1067,10 +1306,7 @@ export default function HomePage() {
                   <Zap className="h-5 w-5" style={{ color: "#ADFF2F" }} />
                   <h3 className="text-lg font-light text-white">Professional</h3>
                 </div>
-                <div className="text-4xl font-light text-white mb-2">
-                  ${isAnnual ? "75" : "95"}
-                  <span className="text-lg text-gray-400">/month</span>
-                </div>
+                <div className="text-4xl font-light text-white mb-2">Starting at ₹21,999</div>
                 <p className="text-gray-400 text-sm font-light mb-6">
                   Perfect for medium businesses with advanced needs.
                 </p>
@@ -1078,7 +1314,7 @@ export default function HomePage() {
                   className="w-full text-black hover:opacity-90 rounded-full mb-6"
                   style={{ backgroundColor: "#ADFF2F" }}
                 >
-                  Buy now
+                  Contact Us
                 </Button>
                 <div className="space-y-3">
                   <p className="text-white font-light text-sm mb-3">{"What's included:"}</p>
@@ -1087,7 +1323,7 @@ export default function HomePage() {
                     "Custom software solutions",
                     "Enhanced analytics & insights",
                     "Priority customer support",
-                    "3 revision rounds",
+                    "6 revision rounds",
                   ].map((feature, index) => (
                     <div key={index} className="flex items-center space-x-2">
                       <Check className="h-4 w-4" style={{ color: "#ADFF2F" }} />
@@ -1109,7 +1345,12 @@ export default function HomePage() {
                 <p className="text-gray-400 text-sm font-light mb-6">
                   Perfect for large businesses with complex requirements.
                 </p>
-                <Button className="w-full bg-white text-black hover:bg-gray-200 rounded-full mb-6">Contact us</Button>
+                <Button
+                  className="w-full text-black hover:opacity-90 rounded-full mb-6"
+                  style={{ backgroundColor: "#ADFF2F" }}
+                >
+                  Contact Us
+                </Button>
                 <div className="space-y-3">
                   <p className="text-white font-light text-sm mb-3">{"What's included:"}</p>
                   {[
@@ -1131,7 +1372,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Team Section with Smooth Scrolling Animation */}
+      {/* Team Section - Co-Founders */}
       <section id="team" className="py-16 px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -1139,142 +1380,100 @@ export default function HomePage() {
               TEAM
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-light text-white mb-4">
-              Meet the team that
+              Meet the co-founders behind
               <br />
-              builds digital solutions like {"it's"} magic
+              <span style={{ color: "#ADFF2F" }}>DEEE Solutions</span>
             </h2>
+            <p className="text-gray-400 font-light max-w-2xl mx-auto">
+              Two passionate entrepreneurs dedicated to transforming ideas into digital reality
+            </p>
           </div>
 
-          <div className="relative overflow-hidden">
-            <div className="flex justify-center items-center space-x-8">
-              {/* Previous members (smaller) */}
-              <div className="hidden md:block opacity-50 scale-75 transition-all duration-1000 ease-in-out transform hover:scale-80">
-                <Card className="bg-gray-800/50 border-gray-700 w-64 h-96 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {teamMembers.map((member, index) => (
+              <motion.div
+                key={member.name}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                viewport={{ once: true }}
+                className="group"
+              >
+                <Card className="bg-gray-800/50 border-gray-700 overflow-hidden hover:bg-gray-800/70 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
                   <div className="relative h-80">
                     <img
-                      src={
-                        teamMembers[(currentTeamMember - 1 + teamMembers.length) % teamMembers.length].image ||
-                        "/placeholder.svg" ||
-                        "/placeholder.svg" ||
-                        "/placeholder.svg" ||
-                        "/placeholder.svg" ||
-                        "/placeholder.svg" ||
-                        "/placeholder.svg" ||
-                        "/placeholder.svg" ||
-                        "/placeholder.svg"
-                      }
-                      alt={teamMembers[(currentTeamMember - 1 + teamMembers.length) % teamMembers.length].name}
-                      className="w-full h-full object-cover transition-all duration-1000"
+                      src={member.image || "/placeholder.svg"}
+                      alt={member.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                  </div>
-                  <div className="p-4 text-center">
-                    <h3 className="text-white font-light transition-all duration-1000">
-                      {teamMembers[(currentTeamMember - 1 + teamMembers.length) % teamMembers.length].name}
-                    </h3>
-                    <p className="text-gray-400 text-sm transition-all duration-1000">
-                      {teamMembers[(currentTeamMember - 1 + teamMembers.length) % teamMembers.length].role}
-                    </p>
-                  </div>
-                </Card>
-              </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
 
-              {/* Current member (larger) */}
-              <div className="relative transition-all duration-1000 ease-in-out transform">
-                <Card
-                  className="border-gray-700 w-80 h-[28rem] overflow-hidden transform transition-all duration-1000 ease-in-out hover:scale-110"
-                  style={{
-                    backgroundColor: "#ADFF2F" + "10",
-                    borderColor: "#ADFF2F" + "30",
-                    transform: "scale(1.05)",
-                    boxShadow: `0 0 30px ${"#ADFF2F"}20`,
-                  }}
-                >
-                  <div className="relative h-80">
-                    <img
-                      src={teamMembers[currentTeamMember].image || "/placeholder.svg"}
-                      alt={teamMembers[currentTeamMember].name}
-                      className="w-full h-full object-cover transition-all duration-1000 ease-in-out"
-                      key={currentTeamMember}
+                    {/* Hover overlay with green tint */}
+                    <div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500"
+                      style={{
+                        background: `linear-gradient(135deg, transparent 0%, rgba(173, 255, 47, 0.3) 100%)`,
+                      }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                   </div>
-                  <div className="p-6 text-center">
-                    <h3 className="text-white font-light text-xl mb-1 transition-all duration-1000">
-                      {teamMembers[currentTeamMember].name}
-                    </h3>
-                    <p className="text-gray-300 text-sm mb-2 transition-all duration-1000">
-                      {teamMembers[currentTeamMember].role}
-                    </p>
-                    <p className="text-gray-400 text-xs transition-all duration-1000">
-                      {teamMembers[currentTeamMember].bio}
-                    </p>
-                  </div>
-                </Card>
 
-                {/* Navigation buttons */}
-                <button
-                  onClick={prevTeamMember}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 rounded-full p-2 transition-all duration-300 hover:scale-110"
-                >
-                  <ChevronLeft className="h-5 w-5 text-white" />
-                </button>
-                <button
-                  onClick={nextTeamMember}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 rounded-full p-2 transition-all duration-300 hover:scale-110"
-                >
-                  <ChevronRight className="h-5 w-5 text-white" />
-                </button>
-              </div>
+                  <CardContent className="p-8 text-center relative">
+                    <div className="relative z-10">
+                      <h3 className="text-2xl font-light text-white mb-2 group-hover:text-green-50 transition-colors duration-300">
+                        {member.name}
+                      </h3>
+                      <p
+                        className="text-sm mb-4 group-hover:text-green-300 transition-colors duration-300"
+                        style={{ color: "#ADFF2F" }}
+                      >
+                        {member.role}
+                      </p>
+                      <p className="text-gray-400 text-sm font-light group-hover:text-gray-300 transition-colors duration-300">
+                        {member.bio}
+                      </p>
+                    </div>
 
-              {/* Next member (smaller) */}
-              <div className="hidden md:block opacity-50 scale-75 transition-all duration-1000 ease-in-out transform hover:scale-80">
-                <Card className="bg-gray-800/50 border-gray-700 w-64 h-96 overflow-hidden">
-                  <div className="relative h-80">
-                    <img
-                      src={teamMembers[(currentTeamMember + 1) % teamMembers.length].image || "/placeholder.svg"}
-                      alt={teamMembers[(currentTeamMember + 1) % teamMembers.length].name}
-                      className="w-full h-full object-cover transition-all duration-1000"
+                    {/* Decorative element */}
+                    <div
+                      className="absolute bottom-4 right-4 w-2 h-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      style={{ backgroundColor: "#ADFF2F" }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                  </div>
-                  <div className="p-4 text-center">
-                    <h3 className="text-white font-light transition-all duration-1000">
-                      {teamMembers[(currentTeamMember + 1) % teamMembers.length].name}
-                    </h3>
-                    <p className="text-gray-400 text-sm transition-all duration-1000">
-                      {teamMembers[(currentTeamMember + 1) % teamMembers.length].role}
-                    </p>
-                  </div>
+                  </CardContent>
                 </Card>
-              </div>
-            </div>
-
-            {/* Progress indicators */}
-            <div className="flex justify-center space-x-2 mt-8">
-              {teamMembers.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentTeamMember(index)}
-                  className={`w-3 h-3 rounded-full transition-all duration-500 hover:scale-125 ${
-                    index === currentTeamMember ? "scale-125" : ""
-                  }`}
-                  style={{
-                    backgroundColor: index === currentTeamMember ? "#ADFF2F" : "#4B5563",
-                  }}
-                />
-              ))}
-            </div>
+              </motion.div>
+            ))}
           </div>
+
+          {/* Call to action */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            <p className="text-gray-400 font-light mb-6">Ready to work with our team?</p>
+            <Button
+              size="lg"
+              className="text-black px-8 py-3 text-sm font-medium rounded-full hover:scale-105 transition-all duration-300"
+              style={{ backgroundColor: "#ADFF2F" }}
+              onClick={() => {
+                document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
+              }}
+            >
+              Get In Touch
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </motion.div>
         </div>
       </section>
-
       {/* FAQ Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-light text-white mb-4">
-              Frequently asked questions about <span style={{ color: "#ADFF2F" }}>DEEE Solutions</span>
+              Frequently asked questions about{" "}
+              <span style={{ color: "#ADFF2F" }}>DEEE Solutions</span>
             </h2>
           </div>
 
@@ -1286,7 +1485,9 @@ export default function HomePage() {
                     onClick={() => setOpenFaq(openFaq === index ? null : index)}
                     className="w-full flex items-center justify-between p-6 text-left"
                   >
-                    <span className="text-white font-light">{faq.question}</span>
+                    <span className="text-white font-light">
+                      {faq.question}
+                    </span>
                     <Plus
                       className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
                         openFaq === index ? "rotate-45" : ""
@@ -1304,9 +1505,164 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      {/* Let's Talk Section */}
+      <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            {/* Left Side - Contact Info */}
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-white mb-4">
+                  Let's <span style={{ color: "#ADFF2F" }}>talk!</span>
+                </h2>
+              </div>
+
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-white font-light text-lg mb-2">Office:</h3>
+                  <div className="text-gray-400 font-light space-y-1">
+                    <p>DEEE Solutions</p>
+                    <p>Porwal Road,Lohegaon</p>
+                    <p>Pune, Maharashtra 411047</p>
+                    <p>India</p>
+<div className="flex items-center space-x-2 mt-2">
+      <Clock className="h-4 w-4" style={{ color: "#ADFF2F" }} />
+      <span className="text-sm">Local time: {time}</span>
+    </div>                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-white font-light text-lg mb-2">Email:</h3>
+                  <div className="flex items-center space-x-3">
+                    <Mail className="h-5 w-5" style={{ color: "#ADFF2F" }} />
+                    <a
+                      href="mailto:hello@deeesolutions.com"
+                      className="text-2xl sm:text-3xl font-light text-white hover:text-green-300 transition-colors duration-300"
+                    >
+                      hello@deeesolutions.com
+                    </a>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-white font-light text-lg mb-2">Phone:</h3>
+                  <div className="flex items-center space-x-3">
+                    <Phone className="h-5 w-5" style={{ color: "#ADFF2F" }} />
+                    <a
+                      href="tel:+919153471582"
+                      className="text-2xl sm:text-3xl font-light text-white hover:text-green-300 transition-colors duration-300"
+                    >
+                      +91 9153471582
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Side - Contact Form */}
+            <div className="bg-gray-800/30 border border-gray-700 rounded-2xl p-8">
+              <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label htmlFor="user_name" className="block text-white font-light text-sm mb-2">
+                    Name
+                  </label>
+                  <Input
+                    type="text"
+                    id="user_name"
+                    name="user_name"
+                    placeholder=""
+                    required
+                    className="bg-gray-900/50 border-gray-600 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500/20"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="user_email" className="block text-white font-light text-sm mb-2">
+                    Email
+                  </label>
+                  <Input
+                    type="email"
+                    id="user_email"
+                    name="user_email"
+                    placeholder=""
+                    required
+                    className="bg-gray-900/50 border-gray-600 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500/20"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="user_phone" className="block text-white font-light text-sm mb-2">
+                    Phone
+                  </label>
+                  <Input
+                    type="tel"
+                    id="user_phone"
+                    name="user_phone"
+                    placeholder=""
+                    className="bg-gray-900/50 border-gray-600 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500/20"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="message" className="block text-white font-light text-sm mb-2">
+                    Message
+                  </label>
+                  <Textarea
+                    id="message"
+                    name="message"
+                    placeholder="Hi team DEEE! I'm reaching out for..."
+                    rows={5}
+                    required
+                    className="bg-gray-900/50 border-gray-600 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500/20 resize-none"
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full text-black hover:opacity-90 rounded-full py-3 text-sm font-medium transition-all duration-300 disabled:opacity-50"
+                  style={{ backgroundColor: "#ADFF2F" }}
+                >
+                  {isSubmitting ? (
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                      <span>Sending...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center space-x-2">
+                      <Send className="h-4 w-4" />
+                      <span>Submit</span>
+                    </div>
+                  )}
+                </Button>
+
+                {/* Status Messages */}
+                {submitStatus === "success" && (
+                  <div className="text-center p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+                    <p className="text-green-400 font-light text-sm">
+                      Message sent successfully! We'll get back to you soon.
+                    </p>
+                  </div>
+                )}
+
+                {submitStatus === "error" && (
+                  <div className="text-center p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+                    <p className="text-red-400 font-light text-sm">
+                      Failed to send message. Please try again or contact us directly.
+                    </p>
+                  </div>
+                )}
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* CTA Section */}
-      <section id="contact" className="py-16 px-4 sm:px-6 lg:px-8 relative z-10">
+      <section
+        id="contact"
+        className="py-16 px-4 sm:px-6 lg:px-8 relative z-10"
+      >
         <div className="max-w-3xl mx-auto text-center">
           <span className="text-lg font-medium text-white">
             DEEE<span style={{ color: "#ADFF2F" }}>solutions</span>
@@ -1331,27 +1687,45 @@ export default function HomePage() {
       <footer className="border-t border-gray-800 py-8 px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
-            <Link href="#home" className="text-gray-400 hover:text-white transition-colors text-sm font-light">
+            <Link
+              href="#home"
+              className="text-gray-400 hover:text-white transition-colors text-sm font-light"
+            >
               Home
             </Link>
-            <Link href="#services" className="text-gray-400 hover:text-white transition-colors text-sm font-light">
+            <Link
+              href="#services"
+              className="text-gray-400 hover:text-white transition-colors text-sm font-light"
+            >
               Services
             </Link>
-            <Link href="#portfolio" className="text-gray-400 hover:text-white transition-colors text-sm font-light">
+            <Link
+              href="#portfolio"
+              className="text-gray-400 hover:text-white transition-colors text-sm font-light"
+            >
               Portfolio
             </Link>
-            <Link href="#pricing" className="text-gray-400 hover:text-white transition-colors text-sm font-light">
+            <Link
+              href="#pricing"
+              className="text-gray-400 hover:text-white transition-colors text-sm font-light"
+            >
               Pricing
             </Link>
-            <Link href="#team" className="text-gray-400 hover:text-white transition-colors text-sm font-light">
+            <Link
+              href="#team"
+              className="text-gray-400 hover:text-white transition-colors text-sm font-light"
+            >
               Team
             </Link>
-            <Link href="#contact" className="text-gray-400 hover:text-white transition-colors text-sm font-light">
+            <Link
+              href="#contact"
+              className="text-gray-400 hover:text-white transition-colors text-sm font-light"
+            >
               Contact
             </Link>
           </div>
         </div>
       </footer>
     </div>
-  )
+  );
 }
