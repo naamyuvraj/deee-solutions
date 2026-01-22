@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { useRef } from "react";
 import emailjs from "@emailjs/browser"
 import { Textarea } from "@/components/ui/textarea"
+import Image from "next/image.js";
 
 
 import { motion } from "framer-motion"
@@ -59,13 +60,13 @@ const [time, setTime] = useState("");
     {
       name: "Yuvraj",
       role: "Co-founder & Full Stack Developer",
-      image: "/placeholder.svg?height=400&width=300&text=Yuvraj",
+      image: "/images/yuvraj.jpeg",
       bio: "Leading product strategy and innovation",
     },
     {
       name: "Sumit",
       role: "Co-founder & Full Stack Developer",
-      image: "/placeholder.svg?height=400&width=300&text=Armenia+Sean",
+      image: "/images/sumit.jpeg",
       bio: "Driving digital marketing excellence",
     }
   ];
@@ -672,6 +673,10 @@ const [time, setTime] = useState("");
               size="lg"
               className="text-black px-8 py-3 text-sm font-medium rounded-full"
               style={{ backgroundColor: "#ADFF2F" }}
+                            onClick={() => {
+                document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
+              }}
+
             >
               Start Your Project
               <ArrowRight className="ml-2 h-4 w-4" />
@@ -680,6 +685,12 @@ const [time, setTime] = useState("");
               size="lg"
               variant="outline"
               className="border-gray-600 text-white hover:bg-gray-800 px-8 py-3 text-sm font-medium rounded-full bg-transparent"
+              onClick={(e) => {
+                e.preventDefault();
+                document
+                  .getElementById("portfolio")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
             >
               View Our Work
             </Button>
