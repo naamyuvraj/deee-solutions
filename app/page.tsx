@@ -1547,10 +1547,10 @@ const [time, setTime] = useState("");
                   <div className="flex items-center space-x-3">
                     <Mail className="h-5 w-5" style={{ color: "#ADFF2F" }} />
                     <a
-                      href="mailto:hello@deeesolutions.com"
+                      href="mailto:hellodeeesolution@gmail.com"
                       className="text-2xl sm:text-3xl font-light text-white hover:text-green-300 transition-colors duration-300"
                     >
-                      hello@deeesolutions.com
+                      hellodeeesolution@gmail.com
                     </a>
                   </div>
                 </div>
@@ -1679,7 +1679,7 @@ const [time, setTime] = useState("");
             DEEE<span style={{ color: "#ADFF2F" }}>solutions</span>
           </span>
           <h2 className="text-3xl sm:text-4xl font-light text-white mb-6 mt-4">
-            Try DEEE Solutions free and create your
+            Try DEEE Solutions and create your
             <br />
             next product in minutes.
           </h2>
@@ -1688,7 +1688,7 @@ const [time, setTime] = useState("");
             className="text-black px-8 py-3 text-sm font-medium rounded-full"
             style={{ backgroundColor: "#ADFF2F" }}
           >
-            hello@deeesolutions.com
+            hellodeeesolution@gmail.com
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>
